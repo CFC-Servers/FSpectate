@@ -48,6 +48,21 @@ local function setSpecOwner()
     end
 end
 
+--[[-------------------------------------------------------------------------
+Finds a player entity by name
+---------------------------------------------------------------------------]]
+local function findByPlayer( name )
+    if not name or name == "" then return nil end
+    local players = player.GetAll()
+
+    for _, ply in ipairs( players ) do
+        if tonumber( name ) == ply:UserID() then return ply end
+        if name == ply:SteamID() then return ply end
+        if string.find( string.lower( ply:Nick() ), string.lower( tostring( name ) ), 1, true ) ~= nil then return ply end
+    end
+
+    return nil
+end
 
 --[[-------------------------------------------------------------------------
 VGUI Options menu
@@ -600,9 +615,9 @@ end
 specEnt
 Spectate a player
 ---------------------------------------------------------------------------]]
-local function startSpectate()
-    isRoaming = net.ReadBool()
-    specEnt = net.ReadEntity()
+local function startSpectate( roaming, ent )
+    isRoaming = roaming
+    specEnt = ent
     specEnt = isValid( specEnt ) and specEnt or nil
 
     setSpecOwner()
@@ -629,7 +644,11 @@ local function startSpectate()
     end )
 end
 
-net.Receive( "fSpectate", startSpectate )
+local function receiveNetSpectate()
+    startSpectate( net.ReadBool(), net.ReadEntity() )
+end
+
+net.Receive( "fSpectate", receiveNetSpectate )
 
 --[[---------------------------------------------------------------------------
 stopSpectating
@@ -659,9 +678,24 @@ end
 Adds the fspectate console command and allows it to be used when the server is down.
 ---------------------------------------------------------------------------]]
 local function handleSpectateRequest( _, _, args )
-    net.Start( "fSpectateName" )
-    net.WriteString( args[1] )
-    net.SendToServer()
+    local timingOut, timeoutTime = GetTimeoutInfo()
+    local playerName = args[1] or ""
+
+    if not timingOut and timeoutTime < 2 then
+        net.Start( "fSpectateName" )
+        net.WriteString( playerName )
+        net.SendToServer()
+        return
+    end
+
+    CAMI.PlayerHasAccess( LocalPlayer(), "fSpectate", function( access )
+        if not access then
+            return LocalPlayer():ChatPrint( "No Access!" )
+        end
+
+        local foundPlayer = findByPlayer( playerName )
+        startSpectate( false, foundPlayer )
+    end )
 end
 
 local function autoComplete( _, stringargs )
