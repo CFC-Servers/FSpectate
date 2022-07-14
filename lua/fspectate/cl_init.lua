@@ -119,8 +119,13 @@ local function toggleSettingsMenu()
 
     addLabel( settingsMenu, "Miscellaneous:" )
 
-    addCheckbox( settingsMenu, "Show E2 chips", function( val ) showE2s = val end, showE2s )
-    addCheckbox( settingsMenu, "Show SF rank", function( val ) showSFs = val end, showSFs )
+    if WireLib then
+        addCheckbox( settingsMenu, "Show E2 chips", function( val ) showE2s = val end, showE2s )
+    end
+
+    if SF then
+        addCheckbox( settingsMenu, "Show SF rank", function( val ) showSFs = val end, showSFs )
+    end
 
     local distanceSlider = vgui.Create( "DNumSlider", settingsMenu )
     distanceSlider:Dock( TOP )
