@@ -492,7 +492,9 @@ local function drawHelp()
     if not isRoaming and isValid( specEnt ) then
         if specEnt:IsPlayer() then
             draw_WordBox( 2, 10, scrHalfH + 80, "Spectating: ", "UiBold", uiBackground, uiForeground )
-            draw_WordBox( 2, 101, scrHalfH + 80, specEnt:Nick() .. " " .. specEnt:SteamID(), "UiBold", uiBackground, team.GetColor( specEnt:Team() ) )
+            local steamId = specEnt:SteamID()
+            if steamId == "NULL" then steamId = "BOT" end
+            draw_WordBox( 2, 101, scrHalfH + 80, specEnt:Nick() .. " " .. steamId, "UiBold", uiBackground, team.GetColor( specEnt:Team() ) )
 
             local currentWeapon = specEnt:GetActiveWeapon()
             if isValid( currentWeapon ) then
