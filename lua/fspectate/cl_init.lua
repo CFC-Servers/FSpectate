@@ -232,8 +232,8 @@ end
 --[[-------------------------------------------------------------------------
 Chams drawing code
 ---------------------------------------------------------------------------]]
-local chamsmat1 = CreateMaterial( "CHAMSMATFSPEC1", "VertexLitGeneric", {["$basetexture"] = "models/debug/debugwhite", ["$model"] = 1, ["$ignorez"] = 1} )
-local chamsmat2 = CreateMaterial( "CHAMSMATFSPEC2", "VertexLitGeneric", {["$basetexture"] = "models/debug/debugwhite", ["$model"] = 1, ["$ignorez"] = 0} )
+local chamsmat1 = CreateMaterial( "CHAMSMATFSPEC1", "VertexLitGeneric", { ["$basetexture"] = "models/debug/debugwhite", ["$model"] = 1, ["$ignorez"] = 1 } )
+local chamsmat2 = CreateMaterial( "CHAMSMATFSPEC2", "VertexLitGeneric", { ["$basetexture"] = "models/debug/debugwhite", ["$model"] = 1, ["$ignorez"] = 0 } )
 
 local function drawCham( ply )
     if not ply:Alive() then return end
