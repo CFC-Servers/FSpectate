@@ -694,6 +694,11 @@ local function handleSpectateRequest( _, _, args )
         end
 
         local foundPlayer = findByPlayer( playerName )
+
+        if foundPlayer == LocalPlayer() then
+            return LocalPlayer():ChatPrint( "Invalid target!" )
+        end
+
         startSpectate( false, foundPlayer )
     end )
 end
