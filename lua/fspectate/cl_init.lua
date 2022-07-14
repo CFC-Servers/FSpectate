@@ -11,6 +11,8 @@ local roamVelocity = Vector( 0 )
 local thirdPersonDistance = 100
 local showChams = false
 local showPlayerInfo = true
+local showE2s = false
+local showSFs = false
 local showNames = true
 local showHealth = false
 local showBeams = false
@@ -114,6 +116,11 @@ local function toggleSettingsMenu()
     addCheckbox( settingsMenu, "Show player health", function( val ) showHealth = val end, showHealth )
     addCheckbox( settingsMenu, "Show player current weapon", function( val ) showWeaponName = val end, showWeaponName )
     addCheckbox( settingsMenu, "Show player rank", function( val ) showRank = val end, showRank )
+
+    addLabel( settingsMenu, "Miscellaneous:" )
+
+    addCheckbox( settingsMenu, "Show E2 chips", function( val ) showE2s = val end, showE2s )
+    addCheckbox( settingsMenu, "Show SF rank", function( val ) showSFs = val end, showSFs )
 
     local distanceSlider = vgui.Create( "DNumSlider", settingsMenu )
     distanceSlider:Dock( TOP )
@@ -503,6 +510,30 @@ local function drawHelp()
     draw_WordBox( 2, 10, scrHalfH + 20, isRoaming and "Right click: quickly move forwards" or "Right click: toggle thirdperson", "UiBold", uiBackground, uiForeground )
     draw_WordBox( 2, 10, scrHalfH + 40, "Jump: Stop spectating", "UiBold", uiBackground, uiForeground )
     draw_WordBox( 2, 10, scrHalfH + 60, "Use: Open the settings menu", "UiBold", uiBackground, uiForeground )
+
+    if showE2s then
+        local e2s = ents.FindByClass( "gmod_wire_expression2" )
+        for _, e2 in ipairs( e2s ) do
+            local name = e2.name or "generic"
+            local owner = e2:CPPIGetOwner()
+            local pos = e2:GetPos():ToScreen()
+
+            draw_WordBox( 2, pos.x, pos.y, "E2: " .. name .. " (" .. owner:GetName() .. ")", "UiBold", uiBackground, uiForeground )
+        end
+    end
+
+    if showSFs then
+        local sfs = ents.FindByClass( "starfall_processor" )
+        for _, sf in ipairs( sfs ) do
+            local name = sf.name
+            local owner = sf.owner
+            local pos = sf:GetPos():ToScreen()
+
+            if name == "" then name = "Generic" end
+
+            draw_WordBox( 2, pos.x, pos.y, "SF: " .. name .. " (" .. owner:GetName() .. ")", "UiBold", uiBackground, uiForeground )
+        end
+    end
 
     if not isRoaming and isValid( specEnt ) then
         if specEnt:IsPlayer() then
