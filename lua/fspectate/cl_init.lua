@@ -652,3 +652,32 @@ stopSpectating = function()
     RunConsoleCommand( "fSpectate_StopSpectating" )
     isSpectating = false
 end
+
+--[[---------------------------------------------------------------------------
+Adds the fspectate console command and allows it to be used when the server is down.
+---------------------------------------------------------------------------]]
+local function handleSpectateRequest( _, _, args )
+    net.Start( "fSpectateName" )
+    net.WriteString( args[1] )
+    net.SendToServer()
+end
+
+local function autoComplete( _, stringargs )
+    stringargs = string.Trim( stringargs ) -- Remove any spaces before or after.
+    stringargs = string.lower( stringargs )
+    local tbl = {}
+
+    for _, v in ipairs( player.GetAll() ) do
+        local nick = v:Nick()
+
+        if string.find( string.lower( nick ), stringargs ) then
+            nick = "\"" .. nick .. "\"" -- We put quotes around it in case players have spaces in their names.
+            nick = "fspectate " .. nick -- We also need to put the cmd before for it to work properly.
+            table.insert( tbl, nick )
+        end
+    end
+
+    return tbl
+end
+
+concommand.Add( "fspectate", handleSpectateRequest, autoComplete )
