@@ -572,30 +572,30 @@ local function drawHelp()
 
     if not isRoaming and isValid( specEnt ) then
         if specEnt:IsPlayer() then
-            draw_WordBox( 2, 10, scrHalfH + 80, "Spectating: ", "UiBold", uiBackground, uiForeground )
+            draw_WordBox( 2, 10, scrHalfH + 100, "Spectating: ", "UiBold", uiBackground, uiForeground )
             local steamId = specEnt:SteamID()
             if steamId == "NULL" then steamId = "BOT" end
-            draw_WordBox( 2, 101, scrHalfH + 80, specEnt:Nick() .. " " .. steamId, "UiBold", uiBackground, team.GetColor( specEnt:Team() ) )
+            draw_WordBox( 2, 101, scrHalfH + 100, specEnt:Nick() .. " " .. steamId, "UiBold", uiBackground, team.GetColor( specEnt:Team() ) )
 
             local currentWeapon = specEnt:GetActiveWeapon()
             if isValid( currentWeapon ) then
-                draw_WordBox( 2, 10, scrHalfH + 100, "Weapon: ", "UiBold", uiBackground, uiForeground )
-                draw_WordBox( 2, 82, scrHalfH + 100, currentWeapon:GetClass(), "UiBold", uiBackground, uiForeground )
+                draw_WordBox( 2, 10, scrHalfH + 120, "Weapon: ", "UiBold", uiBackground, uiForeground )
+                draw_WordBox( 2, 82, scrHalfH + 120, currentWeapon:GetClass(), "UiBold", uiBackground, uiForeground )
             end
         else
-            draw_WordBox( 2, 10, scrHalfH + 80, "Owner: ", "UiBold", uiBackground, uiForeground )
+            draw_WordBox( 2, 10, scrHalfH + 100, "Owner: ", "UiBold", uiBackground, uiForeground )
 
             if specEntOwner then
-                draw_WordBox( 2, 70, scrHalfH + 80, specEntOwner:Nick() .. " " .. specEntOwner:SteamID(), "UiBold", uiBackground, team.GetColor( specEntOwner:Team() ) )
+                draw_WordBox( 2, 70, scrHalfH + 100, specEntOwner:Nick() .. " " .. specEntOwner:SteamID(), "UiBold", uiBackground, team.GetColor( specEntOwner:Team() ) )
             else
-                draw_WordBox( 2, 70, scrHalfH + 80, "World", "UiBold", uiBackground, uiForeground )
+                draw_WordBox( 2, 70, scrHalfH + 100, "World", "UiBold", uiBackground, uiForeground )
             end
         end
     end
 
     if FAdmin then
-        draw_WordBox( 2, 10, scrHalfH + 80, "Opening FAdmin's menu while spectating a player", "UiBold", uiBackground, uiForeground )
-        draw_WordBox( 2, 10, scrHalfH + 100, "\twill open their page!", "UiBold", uiBackground, uiForeground )
+        draw_WordBox( 2, 10, scrHalfH + 100, "Opening FAdmin's menu while spectating a player", "UiBold", uiBackground, uiForeground )
+        draw_WordBox( 2, 10, scrHalfH + 120, "\twill open their page!", "UiBold", uiBackground, uiForeground )
     end
 
     if showPlayerInfo then
