@@ -264,13 +264,15 @@ timer.Create( "fSpectateCheckChips", 0.5, 0, function()
     local chipIds = 0
 
     for _, chip in ipairs( e2ChipsTemp ) do
-        e2Chips[chip] = chip.name
-        chipIds = chipIds .. util.CRC( chip.name .. chip:EntIndex() )
+        local name = name or "Unnamed"
+        e2Chips[chip] = name
+        chipIds = chipIds .. util.CRC( name .. chip:EntIndex() )
     end
 
     for _, chip in ipairs( sfChipsTemp ) do
-        sfChips[chip] = chip.name
-        chipIds = chipIds .. util.CRC( chip.name .. chip:EntIndex() )
+        local name = chip.name or "Unnamed"
+        sfChips[chip] = name
+        chipIds = chipIds .. util.CRC( name .. chip:EntIndex() )
     end
 
     if lastChips == chipIds then return end
