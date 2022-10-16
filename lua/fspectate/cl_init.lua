@@ -47,7 +47,8 @@ local convarTable = {
 
 for convarname, tbl in pairs( convarTable ) do
     local convarString = "fspectate_" .. convarname
-    CreateClientConVar( convarString, tbl.default and 1 or 0, true, true )
+    local value = CreateClientConVar( convarString, tbl.default and 1 or 0, true, true ):GetBool()
+    tbl.func( value )
     cvars.AddChangeCallback( convarString, function( _, _, new )
         tbl.func( tobool( new ) )
     end )
