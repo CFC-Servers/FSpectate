@@ -247,7 +247,7 @@ local lastChips = ""
 timer.Create( "fSpectateCheckChips", 0.5, 0, function()
     local receivers = {}
     for _, ply in ipairs( player.GetAll() ) do
-        if ply:GetInfoNum( "fspectate_e2s", 0 ) == 1 or ply:GetInfoNum( "fspectate_sfs", 0 ) == 1 then
+        if ply.fSpectating and ( ply:GetInfoNum( "fspectate_e2s", 0 ) == 1 or ply:GetInfoNum( "fspectate_sfs", 0 ) == 1 ) then
             table.insert( receivers, ply )
         end
     end
