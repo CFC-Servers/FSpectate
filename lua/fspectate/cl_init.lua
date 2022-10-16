@@ -33,16 +33,16 @@ local draw_WordBox = draw.WordBox
 
 -- set up convars for customization
 local convarTable = {
-    aimlines = { default = 1, func = function( val ) showBeams = val end },
-    xray = { default = 0, func = function( val ) showChams = val end },
-    crosshair = { default = 1, func = function( val ) showCrosshair = val end },
-    playerinfo = { default = 1, func = function( val ) showPlayerInfo = val end },
-    names = { default = 1, func = function( val ) showNames = val end },
-    health = { default = 0, func = function( val ) showHealth = val end },
-    weapon = { default = 0, func = function( val ) showWeaponName = val end },
-    rank = { default = 0, func = function( val ) showRank = val end },
-    e2s = { default = 0, func = function( val ) showE2s = val end },
-    sfs = { default = 0, func = function( val ) showSFs = val end },
+    aimlines = { default = true, func = function( val ) showBeams = val end },
+    xray = { default = false, func = function( val ) showChams = val end },
+    crosshair = { default = true, func = function( val ) showCrosshair = val end },
+    playerinfo = { default = true, func = function( val ) showPlayerInfo = val end },
+    names = { default = true, func = function( val ) showNames = val end },
+    health = { default = false, func = function( val ) showHealth = val end },
+    weapon = { default = false, func = function( val ) showWeaponName = val end },
+    rank = { default = false, func = function( val ) showRank = val end },
+    e2s = { default = false, func = function( val ) showE2s = val end },
+    sfs = { default = false, func = function( val ) showSFs = val end },
 }
 
 for convarname, tbl in pairs( convarTable ) do
