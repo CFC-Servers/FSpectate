@@ -529,7 +529,6 @@ end
 Draw help on the screen
 ---------------------------------------------------------------------------]]
 local uiForeground, uiBackground = Color( 240, 240, 255, 255 ), Color( 20, 20, 20, 120 )
-local red = Color( 255, 0, 0, 255 )
 
 local function drawHelp()
     local scrHalfH = math.floor( ScrH() / 2 )
