@@ -4,7 +4,7 @@ local isSpectating = false
 local specEnt
 local thirdperson = true
 local isRoaming = false
-local roamPos -- the position when roaming free
+local roamPos = Vector() -- the position when roaming free
 local roamVelocity = Vector( 0 )
 local e2sToDraw = {}
 local sfsToDraw = {}
