@@ -638,9 +638,7 @@ local function drawHelp()
     local center = target:LocalToWorld( target:OBBCenter() )
     local eyeAng = EyeAngles()
     local rightUp = eyeAng:Right() * 16 + eyeAng:Up() * 36
-    local topRight = ( center + rightUp ):ToScreen()
     local bottomLeft = ( center - rightUp ):ToScreen()
-    draw.RoundedBox( 12, bottomLeft.x, bottomLeft.y, math.max( 20, topRight.x - bottomLeft.x ), topRight.y - bottomLeft.y, red )
     draw_WordBox( 2, bottomLeft.x, bottomLeft.y + 12, "Left click to spectate!", "UiBold", uiBackground, uiForeground )
 end
 
