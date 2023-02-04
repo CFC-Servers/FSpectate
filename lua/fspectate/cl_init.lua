@@ -785,7 +785,7 @@ local function autoComplete( _, stringargs )
     for _, v in ipairs( player.GetAll() ) do
         local nick = v:Nick()
 
-        if string.find( string.lower( nick ), stringargs ) then
+        if string.find( string.lower( nick ), stringargs, _, true ) then
             nick = "\"" .. nick .. "\"" -- We put quotes around it in case players have spaces in their names.
             nick = "fspectate " .. nick -- We also need to put the cmd before for it to work properly.
             table.insert( tbl, nick )
