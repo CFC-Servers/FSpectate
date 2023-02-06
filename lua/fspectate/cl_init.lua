@@ -780,12 +780,13 @@ end
 local function autoComplete( _, stringargs )
     stringargs = string.Trim( stringargs ) -- Remove any spaces before or after.
     stringargs = string.lower( stringargs )
+    stringargs = string.PatternSafe( stringargs )
     local tbl = {}
 
     for _, v in ipairs( player.GetAll() ) do
         local nick = v:Nick()
 
-        if string.find( string.lower( nick ), stringargs, _, true ) then
+        if string.find( string.lower( nick ), stringargs ) then
             nick = "\"" .. nick .. "\"" -- We put quotes around it in case players have spaces in their names.
             nick = "fspectate " .. nick -- We also need to put the cmd before for it to work properly.
             table.insert( tbl, nick )
