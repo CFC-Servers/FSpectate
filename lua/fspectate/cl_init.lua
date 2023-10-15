@@ -291,13 +291,13 @@ local function drawCham( ply )
     if not ply:Alive() then return end
     if ply == specEnt and not thirdperson then return end
 
-    local col = ply._teamColor
+    local col = ply:GetVar( "_teamColor" )
     if not col then
         col = teamGetColor( ply:Team() )
         ply._teamColor = col
     end
 
-    local r, g, b = col:Unpack()
+    local r, g, b = col.r, col.g, col.b
 
     cam_Start3D();
         setColorModulation( r / 1000, g / 1000, b / 1000 )
