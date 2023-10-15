@@ -448,19 +448,6 @@ local function lookingLines()
     cam_End3D()
 end
 
---[[--------------------------------------------------------------------------
-gunpos
-Gets the position of a player's gun
---------------------------------------------------------------------------]]
-local function gunpos( ply )
-    local wep = ply:GetActiveWeapon()
-    if not isValid( wep ) then return ply:EyePos() end
-    local att = wep:GetAttachment( 1 )
-    if not att then return ply:EyePos() end
-
-    return att.Pos
-end
-
 --[[---------------------------------------------------------------------------
 Spectate think
 Free roaming position updates
@@ -482,10 +469,9 @@ local function specThink()
         end
 
         local tr = p:GetEyeTrace()
-        local sp = gunpos( p )
         local pos = i * 3 - skip
         linesToDraw[pos] = tr.HitPos
-        linesToDraw[pos + 1] = sp
+        linesToDraw[pos + 1] = tr.StartPos
         linesToDraw[pos + 2] = team.GetColor( p:Team() )
         lastPly = i
     end
