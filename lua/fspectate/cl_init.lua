@@ -534,7 +534,7 @@ local function drawHelp()
                 return
             end
             local owner = e2:CPPIGetOwner()
-            local ownerName = owner:GetName() or "world"
+            local ownerName = IsValid( owner ) and owner:GetName() or "world"
             local pos = e2:GetPos():ToScreen()
 
             draw_WordBox( 2, pos.x, pos.y, "E2: " .. name .. " (" .. ownerName .. ")", "UiBold", uiBackground, uiForeground )
