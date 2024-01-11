@@ -2,6 +2,7 @@ fSpectate = {}
 local stopSpectating, startFreeRoam
 local isSpectating = false
 local specEnt
+local specEntOwner
 local thirdperson = true
 local isRoaming = false
 local roamPos = Vector() -- the position when roaming free
@@ -53,6 +54,8 @@ for convarname, tbl in pairs( convarTable ) do
         tbl.func( tobool( new ) )
     end )
 end
+
+local Picker = include( "cl_picker.lua" )
 
 --[[-------------------------------------------------------------------------
 Retrieve the current spectated player
@@ -217,7 +220,7 @@ end )
 --[[-------------------------------------------------------------------------
 Get the thirdperson position
 ---------------------------------------------------------------------------]]
-local function getThirdPersonPos( ent )
+function fSpectate.getThirdPersonPos( ent )
     local aimvector = LocalPlayer():GetAimVector()
     local startPos = ent:IsPlayer() and ent:GetShootPos() or ent:LocalToWorld( ent:OBBCenter() )
     local endpos = startPos - aimvector * thirdPersonDistance
@@ -232,16 +235,21 @@ local function getThirdPersonPos( ent )
 
     return trace.HitPos + trace.HitNormal * 10
 end
+local getThirdPersonPos = fSpectate.getThirdPersonPos
 
 --[[-------------------------------------------------------------------------
 Get the CalcView table
 ---------------------------------------------------------------------------]]
 local view = {}
 
-local function getCalcView()
+function fSpectate.getCalcView()
     if not isRoaming then
         if thirdperson then
-            view.origin = getThirdPersonPos( specEnt )
+            if Picker.selecting then
+                view.origin = Picker:GetThirdPersonPos( specEnt )
+            else
+                view.origin = getThirdPersonPos( specEnt )
+            end
             view.angles = LocalPlayer():EyeAngles()
         else
             view.origin = specEnt:IsPlayer() and specEnt:GetShootPos() or specEnt:LocalToWorld( specEnt:OBBCenter() )
@@ -260,6 +268,7 @@ local function getCalcView()
 
     return view
 end
+local getCalcView = fSpectate.getCalcView
 
 --[[-------------------------------------------------------------------------
 specCalcView
@@ -370,7 +379,8 @@ Change binds to perform spectate specific tasks
 -- Manual keysDown table, so I can return true in plyBindPress and still detect key presses
 local keysDown = {}
 
-local function specBinds( _, bind, pressed )
+-- No modifier
+local function plainBinds( _, bind, pressed )
     local key = input.LookupBinding( bind )
 
     if bind == "+jump" then
@@ -382,6 +392,16 @@ local function specBinds( _, bind, pressed )
         RunConsoleCommand( "FTPToPos", string.format( "%d, %d, %d", pos.x, pos.y, pos.z ), string.format( "%d, %d, %d", roamVelocity.x, roamVelocity.y, roamVelocity.z ) )
         stopSpectating()
     elseif bind == "+attack" and pressed then
+        if Picker.selecting then
+            print( "calling Picker:Stop()" )
+            local pos = Picker:Stop()
+
+            RunConsoleCommand( "FTPToPos", string.format( "%d, %d, %d", pos.x, pos.y, pos.z ), string.format( "%d, %d, %d", roamVelocity.x, roamVelocity.y, roamVelocity.z ) )
+            stopSpectating()
+            return true
+        end
+        print( "not calling Picker:Stop()" )
+
         if not isRoaming then
             startFreeRoam()
         else
@@ -413,6 +433,28 @@ local function specBinds( _, bind, pressed )
         thirdPersonDistance = thirdPersonDistance + 10 * ( key == "MWHEELDOWN" and 1 or -1 )
     end
     -- Do not return otherwise, spectating admins should be able to move to avoid getting detected
+end
+
+local function shiftBinds( _, bind, pressed )
+    if pressed and bind == "+reload" and specEnt and specEnt:IsValid() then
+        if Picker.selecting then
+            Picker:Stop()
+            return true
+        else
+            Picker:Start( specEnt )
+            return true
+        end
+    end
+
+    return plainBinds( _, bind, pressed )
+end
+
+local function specBinds( _, bind, pressed )
+    local shift = input.IsKeyDown( KEY_LSHIFT )
+    if shift then return shiftBinds( _, bind, pressed ) end
+
+    return plainBinds( _, bind, pressed )
+
 end
 
 --[[------------------------------------------------------------------------

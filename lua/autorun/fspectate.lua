@@ -5,6 +5,7 @@ if SERVER then
     AddCSLuaFile( "sh_cami.lua" )
     AddCSLuaFile( "fspectate/cl_init.lua" )
     AddCSLuaFile( "fspectate/sh_init.lua" )
+    AddCSLuaFile( "fspectate/cl_picker.lua" )
 
     include( "fspectate/sv_init.lua" )
 elseif CLIENT then

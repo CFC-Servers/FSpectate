@@ -126,6 +126,13 @@ local function TPToPos( ply, _, args )
             ply:SetVelocity( vel )
         end
 
+        local spectating = ply.fSpectatingEnt
+        if spectating and spectating:IsValid() then
+            local newAngles = (spectating:GetShootPos() - pos):Angle()
+            newAngles.p = 0
+            ply:SetEyeAngles( newAngles )
+        end
+
         hook.Call( "FTPToPos", nil, ply, pos )
     end )
 end
