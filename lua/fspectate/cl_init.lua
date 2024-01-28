@@ -27,6 +27,7 @@ local isValid = IsValid
 local teamGetColor = team.GetColor
 local setColorModulation = render.SetColorModulation
 local materialOverride = render.MaterialOverride
+local suppressEngineLighting = render.SuppressEngineLighting
 local cam_Start3D = cam.Start3D
 local cam_End3D = cam.End3D
 local draw_WordBox = draw.WordBox
@@ -300,6 +301,7 @@ local function drawCham( ply )
     local r, g, b = col.r, col.g, col.b
 
     cam_Start3D();
+        suppressEngineLighting( true )
         setColorModulation( r / 1000, g / 1000, b / 1000 )
         materialOverride( chamsmat1 )
 
@@ -310,6 +312,7 @@ local function drawCham( ply )
 
         ply:DrawModel()
         materialOverride()
+        suppressEngineLighting( false )
     cam_End3D();
 end
 
