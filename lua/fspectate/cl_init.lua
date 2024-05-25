@@ -688,6 +688,11 @@ local function startSpectate( roaming, ent )
     hook.Add( "FAdmin_ShowFAdminMenu", "fSpectate", fadminmenushow )
     hook.Add( "RenderScreenspaceEffects", "fSpectate", lookingLines )
     hook.Add( "PostDrawOpaqueRenderables", "fSpectate", drawChams )
+    hook.Add( "HUDShouldDraw", "fSpectate", function( name )
+        if name == "CHudDamageIndicator" then
+            return false
+        end
+    end )
 
     timer.Create( "fSpectatePosUpdate", 0.5, 0, function()
         if not isRoaming then return end
@@ -715,6 +720,7 @@ stopSpectating = function()
     hook.Remove( "FAdmin_ShowFAdminMenu", "fSpectate" )
     hook.Remove( "RenderScreenspaceEffects", "fSpectate" )
     hook.Remove( "PostDrawOpaqueRenderables", "fSpectate" )
+    hook.Remove( "HUDShouldDraw", "fSpectate" )
     timer.Remove( "fSpectatePosUpdate" )
 
     if isValid( specEnt ) then
