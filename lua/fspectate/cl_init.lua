@@ -149,7 +149,7 @@ local function toggleSettingsMenu()
     end
 
     if SF then
-        addCheckbox( settingsMenu, "Show SF rank", "sfs" )
+        addCheckbox( settingsMenu, "Show SF chips", "sfs" )
     end
 
     local distanceSlider = vgui.Create( "DNumSlider", settingsMenu )
