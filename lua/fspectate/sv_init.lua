@@ -56,7 +56,7 @@ local function startSpectating( ply, target )
             targetText = target:Nick() .. " (" .. target:SteamID() .. ")"
         else
             local targetOwner = target:CPPIGetOwner()
-            if targetOwner then
+            if IsValid( targetOwner ) then
                 targetText = target:GetClass() .. " owned by: " .. targetOwner:Nick() .. " (" .. targetOwner:SteamID() .. ")"
             else
                 targetText = target:GetClass()
