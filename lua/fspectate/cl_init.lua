@@ -548,7 +548,7 @@ local function drawHelp()
                 return
             end
             local owner = sf:CPPIGetOwner()
-            local ownerName = owner and owner:GetName() or "unknown"
+            local ownerName = IsValid( owner ) and owner:GetName() or "unknown"
             local pos = sf:GetPos():ToScreen()
 
             draw_WordBox( 2, pos.x, pos.y, "SF: " .. name .. " (" .. ownerName .. ")", "UiBold", uiBackground, uiForeground )
