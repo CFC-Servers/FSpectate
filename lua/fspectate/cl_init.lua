@@ -570,7 +570,7 @@ local function drawHelp()
         else
             draw_WordBox( 2, 10, scrHalfH + 100, "Owner: ", "UiBold", uiBackground, uiForeground )
 
-            if specEntOwner then
+            if IsValid( specEntOwner ) then
                 draw_WordBox( 2, 70, scrHalfH + 100, specEntOwner:Nick() .. " " .. specEntOwner:SteamID(), "UiBold", uiBackground, team.GetColor( specEntOwner:Team() ) )
             else
                 draw_WordBox( 2, 70, scrHalfH + 100, "World", "UiBold", uiBackground, uiForeground )
