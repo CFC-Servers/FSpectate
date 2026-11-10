@@ -584,7 +584,6 @@ local function drawChipInfo( placedInfo, chips, chipType, unknownOwnerName )
         local x, y = label.x, label.y
 
         if groupChipsByOwner and isValid( label.owner ) then
-            -- ponytail: quadratic overlap scan; use spatial indexing if chip counts make this costly.
             local index = 1
             while index <= #group do
                 local box = group[index]
@@ -638,7 +637,7 @@ local function drawHelp()
             draw_WordBox( 2, 10, scrHalfH + 100, "Spectating: ", "UiBold", uiBackground, uiForeground )
             local steamId = specEnt:SteamID()
             if steamId == "NULL" then steamId = "BOT" end
-            draw_WordBox( 2, 101, scrHalfH + 100, specEnt:Nick() .. " " .. steamId, "UiBold", uiBackground, team.GetColor( specEnt:Team() ) )
+            draw_WordBox( 2, 101, scrHalfH + 100, specEnt:Nick() .. " (" .. steamId .. ")", "UiBold", uiBackground, team.GetColor( specEnt:Team() ) )
 
             local currentWeapon = specEnt:GetActiveWeapon()
             if isValid( currentWeapon ) then
@@ -649,7 +648,7 @@ local function drawHelp()
             draw_WordBox( 2, 10, scrHalfH + 100, "Owner: ", "UiBold", uiBackground, uiForeground )
 
             if IsValid( specEntOwner ) then
-                draw_WordBox( 2, 70, scrHalfH + 100, specEntOwner:Nick() .. " " .. specEntOwner:SteamID(), "UiBold", uiBackground, team.GetColor( specEntOwner:Team() ) )
+                draw_WordBox( 2, 70, scrHalfH + 100, specEntOwner:Nick() .. " (" .. specEntOwner:SteamID() .. ")", "UiBold", uiBackground, team.GetColor( specEntOwner:Team() ) )
             else
                 draw_WordBox( 2, 70, scrHalfH + 100, "World", "UiBold", uiBackground, uiForeground )
             end
