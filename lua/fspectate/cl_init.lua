@@ -623,6 +623,8 @@ local function drawHelp()
     end
 
     if showPlayerInfo then
+        local playerInfoVerticalOffset = 26
+
         for i = 1, #pls do
             local ply = pls[i]
             if not isValid( ply ) then continue end
@@ -651,7 +653,7 @@ local function drawHelp()
             end
 
             if #rows == 0 then continue end
-            drawStackedInfo( placedInfo, pos.x, pos.y - 26, rows )
+            drawStackedInfo( placedInfo, pos.x, pos.y - playerInfoVerticalOffset, rows )
         end
     end
 
