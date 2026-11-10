@@ -575,7 +575,7 @@ local function drawHelp()
                 e2sToDraw[e2] = nil
                 return
             end
-            local owner = getChipOwner( e2)
+            local owner = getChipOwner( e2 )
             local ownerName = IsValid( owner ) and owner:GetName() or "world"
             local pos = e2:GetPos():ToScreen()
 
