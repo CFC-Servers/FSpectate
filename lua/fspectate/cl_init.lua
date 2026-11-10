@@ -15,6 +15,7 @@ local showChams = false
 local showPlayerInfo = true
 local showE2s = false
 local showSFs = false
+local groupChipsByOwner = true
 local showNames = true
 local showHealth = false
 local showBeams = false
@@ -43,6 +44,7 @@ local convarTable = {
     rank = { default = 0, func = function( val ) showRank = val end },
     e2s = { default = 0, func = function( val ) showE2s = val end },
     sfs = { default = 0, func = function( val ) showSFs = val end },
+    groupchips = { default = 1, func = function( val ) groupChipsByOwner = val end },
 }
 
 for convarname, tbl in pairs( convarTable ) do
@@ -150,6 +152,10 @@ local function toggleSettingsMenu()
 
     if SF then
         addCheckbox( settingsMenu, "Show SF chips", "sfs" )
+    end
+
+    if WireLib or SF then
+        addCheckbox( settingsMenu, "Group overlapping chips by owner", "groupchips" )
     end
 
     local distanceSlider = vgui.Create( "DNumSlider", settingsMenu )
@@ -548,6 +554,65 @@ local function drawStackedInfo( placedInfo, x, y, rows )
     end
 end
 
+local function drawChipInfo( placedInfo, chips, chipType, unknownOwnerName )
+    local labels = {}
+    local boxPadding = 2
+    surface.SetFont( "UiBold" )
+
+    for chip, name in pairs( chips ) do
+        if not isValid( chip ) then
+            chips[chip] = nil
+            continue
+        end
+
+        local pos = chip:GetPos():ToScreen()
+        if not pos.visible then continue end
+        local owner = chip:CPPIGetOwner()
+        local ownerName = isValid( owner ) and owner:GetName() or unknownOwnerName
+        local text = chipType .. ": " .. name .. " (" .. ownerName .. ")"
+        local width, height = surface.GetTextSize( text )
+        labels[#labels + 1] = {
+            x = pos.x, y = pos.y, width = width + boxPadding * 2, height = height + boxPadding * 2,
+            owner = owner, ownerName = ownerName, text = text
+        }
+    end
+
+    for _, label in ipairs( labels ) do
+        if label.grouped then continue end
+        local group = { label }
+        label.grouped = true
+        local x, y = label.x, label.y
+
+        if groupChipsByOwner and isValid( label.owner ) then
+            -- ponytail: quadratic overlap scan; use spatial indexing if chip counts make this costly.
+            local index = 1
+            while index <= #group do
+                local box = group[index]
+                for _, other in ipairs( labels ) do
+                    if not other.grouped and other.owner == label.owner
+                        and box.x < other.x + other.width and box.x + box.width > other.x
+                        and box.y < other.y + other.height and box.y + box.height > other.y then
+                        other.grouped = true
+                        group[#group + 1] = other
+                        x = x + other.x
+                        y = y + other.y
+                    end
+                end
+                index = index + 1
+            end
+        end
+
+        local text = label.text
+        if #group > 1 then
+            text = chipType .. " (x" .. #group .. "): (" .. label.ownerName .. ")"
+        end
+
+        drawStackedInfo( placedInfo, x / #group, y / #group, {
+            { text = text, color = uiForeground }
+        } )
+    end
+end
+
 local function drawHelp()
     local scrHalfH = math.floor( ScrH() / 2 )
     local target = findNearestObject()
@@ -561,37 +626,11 @@ local function drawHelp()
     draw_WordBox( 2, 10, scrHalfH + 80, "Use: Open the settings menu", "UiBold", uiBackground, uiForeground )
 
     if showE2s then
-        for e2, name in pairs( e2sToDraw ) do
-            if not IsValid( e2 ) then
-                e2sToDraw[e2] = nil
-                return
-            end
-            local owner = e2:CPPIGetOwner()
-            local ownerName = IsValid( owner ) and owner:GetName() or "world"
-            local pos = e2:GetPos():ToScreen()
-
-            if not pos.visible then continue end
-            drawStackedInfo( placedInfo, pos.x, pos.y, {
-                { text = "E2: " .. name .. " (" .. ownerName .. ")", color = uiForeground }
-            } )
-        end
+        drawChipInfo( placedInfo, e2sToDraw, "E2", "world" )
     end
 
     if showSFs then
-        for sf, name in pairs( sfsToDraw ) do
-            if not IsValid( sf ) then
-                sfsToDraw[sf] = nil
-                return
-            end
-            local owner = sf:CPPIGetOwner()
-            local ownerName = IsValid( owner ) and owner:GetName() or "unknown"
-            local pos = sf:GetPos():ToScreen()
-
-            if not pos.visible then continue end
-            drawStackedInfo( placedInfo, pos.x, pos.y, {
-                { text = "SF: " .. name .. " (" .. ownerName .. ")", color = uiForeground }
-            } )
-        end
+        drawChipInfo( placedInfo, sfsToDraw, "SF", "unknown" )
     end
 
     if not isRoaming and isValid( specEnt ) then
