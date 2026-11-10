@@ -645,8 +645,9 @@ local function drawHelp()
                 rows[#rows + 1] = { text = ply:GetUserGroup(), color = uiForeground }
             end
 
-            if showWeaponName and isValid( ply:GetActiveWeapon() ) then
-                rows[#rows + 1] = { text = ply:GetActiveWeapon():GetClass(), color = uiForeground }
+            local wep = ply:GetActiveWeapon()
+            if showWeaponName and isValid( wep ) then
+                rows[#rows + 1] = { text = wep:GetClass(), color = uiForeground }
             end
 
             if #rows == 0 then continue end
