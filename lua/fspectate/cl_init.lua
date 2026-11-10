@@ -78,7 +78,7 @@ end
 --[[-------------------------------------------------------------------------
 Set the spec owner and checks for cppi
 ---------------------------------------------------------------------------]]
-local function getChipOwner(ent)
+local function getChipOwner( ent )
     if CPPI then return ent:CPPIGetOwner() end
 
     return ent:GetOwner()
@@ -575,7 +575,7 @@ local function drawHelp()
                 e2sToDraw[e2] = nil
                 return
             end
-            local owner = getChipOwner(e2)
+            local owner = getChipOwner( e2)
             local ownerName = IsValid( owner ) and owner:GetName() or "world"
             local pos = e2:GetPos():ToScreen()
 
@@ -592,7 +592,7 @@ local function drawHelp()
                 sfsToDraw[sf] = nil
                 return
             end
-            local owner = getChipOwner(sf)
+            local owner = getChipOwner( sf )
             local ownerName = IsValid( owner ) and owner:GetName() or "unknown"
             local pos = sf:GetPos():ToScreen()
 
