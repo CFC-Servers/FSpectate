@@ -264,13 +264,15 @@ timer.Create( "fSpectateCheckChips", 0.5, 0, function()
     local chipIds = 0
 
     for _, chip in ipairs( e2ChipsTemp ) do
-        local name = name or "Unnamed"
+        local name = chip.name or "Unnamed"
+        name = string.sub( string.gsub( name, "[\n\r]", "" ), 1, 40 )
         e2Chips[chip] = name
         chipIds = chipIds .. util.CRC( name .. chip:EntIndex() )
     end
 
     for _, chip in ipairs( sfChipsTemp ) do
         local name = chip.name or "Unnamed"
+        name = string.sub( string.gsub( name, "[\n\r]", "" ), 1, 40 )
         sfChips[chip] = name
         chipIds = chipIds .. util.CRC( name .. chip:EntIndex() )
     end
