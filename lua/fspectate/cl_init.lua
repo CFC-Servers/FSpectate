@@ -16,6 +16,7 @@ local showPlayerInfo = true
 local showE2s = false
 local showSFs = false
 local groupChipsByOwner = true
+local stackInfo = false
 local showNames = true
 local showHealth = false
 local showBeams = false
@@ -45,6 +46,7 @@ local convarTable = {
     e2s = { default = 0, func = function( val ) showE2s = val end },
     sfs = { default = 0, func = function( val ) showSFs = val end },
     groupchips = { default = 1, func = function( val ) groupChipsByOwner = val end },
+    stackinfo = { default = 0, func = function( val ) stackInfo = val end },
 }
 
 for convarname, tbl in pairs( convarTable ) do
@@ -145,6 +147,8 @@ local function toggleSettingsMenu()
     addCheckbox( settingsMenu, "Show player rank", "rank" )
 
     addLabel( settingsMenu, "Miscellaneous:" )
+
+    addCheckbox( settingsMenu, "Stack overlapping labels", "stackinfo" )
 
     if WireLib then
         addCheckbox( settingsMenu, "Show E2 chips", "e2s" )
@@ -534,19 +538,19 @@ local function drawStackedInfo( placedInfo, x, y, rows )
         height = height + row.height
     end
 
-    local moved
-    repeat
-        moved = false
-        for _, box in ipairs( placedInfo ) do
+    if stackInfo then
+        local insertIndex = 1
+        for i, box in ipairs( placedInfo ) do
             if x < box.x + box.width and x + width > box.x
                 and y < box.y + box.height + spacing and y + height + spacing > box.y then
                 y = box.y - height - spacing
-                moved = true
             end
-        end
-    until not moved
 
-    placedInfo[#placedInfo + 1] = { x = x, y = y, width = width, height = height }
+            if box.y >= y then insertIndex = i + 1 end
+        end
+
+        table.insert( placedInfo, insertIndex, { x = x, y = y, width = width, height = height } )
+    end
 
     for _, row in ipairs( rows ) do
         draw_WordBox( 2, x, y, row.text, "UiBold", uiBackground, row.color )
