@@ -588,9 +588,9 @@ local function drawChipInfo( placedInfo, chips, chipType, unknownOwnerName )
         local x, y = label.x, label.y
 
         if groupChipsByOwner and isValid( label.owner ) then
-            local index = 1
-            while index <= #group do
+            for index = 1, #labels do
                 local box = group[index]
+                if not box then break end
                 for _, other in ipairs( labels ) do
                     if not other.grouped and other.owner == label.owner
                         and box.x < other.x + other.width and box.x + box.width > other.x
@@ -601,7 +601,6 @@ local function drawChipInfo( placedInfo, chips, chipType, unknownOwnerName )
                         y = y + other.y
                     end
                 end
-                index = index + 1
             end
         end
 
