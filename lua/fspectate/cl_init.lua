@@ -570,7 +570,7 @@ local function drawChipInfo( placedInfo, chips, chipType, unknownOwnerName )
         end
 
         local pos = chip:GetPos():ToScreen()
-        if not pos.visible then continue end
+        --if not pos.visible then continue end
         local owner = chip:CPPIGetOwner()
         local ownerName = isValid( owner ) and owner:GetName() or unknownOwnerName
         local text = chipType .. ": " .. name .. " (" .. ownerName .. ")"
@@ -671,7 +671,7 @@ local function drawHelp()
             if not isValid( ply ) then continue end
             if not isRoaming and ply == specEnt then continue end
             local pos = ply:GetShootPos():ToScreen()
-            if not pos.visible then continue end
+            --if not pos.visible then continue end
             local rows = {}
 
             if showNames then
