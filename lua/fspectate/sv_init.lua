@@ -40,7 +40,6 @@ local function startSpectating( ply, target )
     ply.fSpectatingEnt = target
     ply.fSpectating = true
     fSpectating[ply] = true
-    --ply:ExitVehicle()
     net.Start( "fSpectate" )
     net.WriteBool( target == nil )
 
@@ -120,6 +119,7 @@ local function TPToPos( ply, _, args )
         local pos = Vector( tonumber( x ), tonumber( y ), tonumber( z ) )
         local vel = Vector( tonumber( vx or 0 ), tonumber( vy or 0 ), tonumber( vz or 0 ) )
         if not args[1] or not x or not y or not z then return end
+        ply:ExitVehicle()
         ply:SetPos( pos )
 
         if vx and vy and vz then
