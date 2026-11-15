@@ -40,7 +40,7 @@ local function startSpectating( ply, target )
     ply.fSpectatingEnt = target
     ply.fSpectating = true
     fSpectating[ply] = true
-    ply:ExitVehicle()
+    --ply:ExitVehicle()
     net.Start( "fSpectate" )
     net.WriteBool( target == nil )
 
