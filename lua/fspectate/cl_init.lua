@@ -225,6 +225,7 @@ hook.Add( "Initialize", "fSpectate", function()
 end )
 
 local view = {}
+
 --[[-------------------------------------------------------------------------
 Get the thirdperson position
 ---------------------------------------------------------------------------]]
@@ -248,7 +249,6 @@ end
 --[[-------------------------------------------------------------------------
 Get the CalcView table
 ---------------------------------------------------------------------------]]
-
 local function getCalcView()
     if not isRoaming then
         if thirdperson then
@@ -473,16 +473,16 @@ local function specThink()
     local pls = player.GetAll()
     local lastPly = 0
     local skip = 0
-    
+
     for i = 0, #pls - 1 do
         local p = pls[i + 1]
         if not isValid( p ) then continue end
-        
+
         if not isRoaming and p == specEnt and not thirdperson then
             skip = skip + 3
             continue
         end
-        
+
         local tr = p:GetEyeTrace()
         local pos = i * 3 - skip
         linesToDraw[pos] = tr.HitPos
@@ -490,12 +490,12 @@ local function specThink()
         linesToDraw[pos + 2] = team.GetColor( p:Team() )
         lastPly = i
     end
-    
+
     -- Remove entries from linesToDraw that don't match with a player anymore
     for i = #linesToDraw, lastPly * 3 + 3, -1 do
         linesToDraw[i] = nil
     end
-    
+
     if not isRoaming or keysDown["USE"] then return end
     local roamSpeed = 1000
     if not view.angles then return end
