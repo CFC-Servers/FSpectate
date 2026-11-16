@@ -224,11 +224,14 @@ hook.Add( "Initialize", "fSpectate", function()
     end
 end )
 
+local view = {}
+
 --[[-------------------------------------------------------------------------
 Get the thirdperson position
 ---------------------------------------------------------------------------]]
 local function getThirdPersonPos( ent )
-    local aimvector = LocalPlayer():GetAimVector()
+    if not view.angles then return Vector( 0, 0, 0 ) end
+    local aimvector = view.angles:Forward()
     local startPos = ent:IsPlayer() and ent:GetShootPos() or ent:LocalToWorld( ent:OBBCenter() )
     local endpos = startPos - aimvector * thirdPersonDistance
 
@@ -246,13 +249,12 @@ end
 --[[-------------------------------------------------------------------------
 Get the CalcView table
 ---------------------------------------------------------------------------]]
-local view = {}
-
 local function getCalcView()
     if not isRoaming then
         if thirdperson then
-            view.origin = getThirdPersonPos( specEnt )
             view.angles = LocalPlayer():EyeAngles()
+            view.angles.r = 0
+            view.origin = getThirdPersonPos( specEnt )
         else
             view.origin = specEnt:IsPlayer() and specEnt:GetShootPos() or specEnt:LocalToWorld( specEnt:OBBCenter() )
             view.angles = specEnt:IsPlayer() and specEnt:EyeAngles() or specEnt:GetAngles()
@@ -266,6 +268,8 @@ local function getCalcView()
 
     view.origin = roamPos
     view.angles = LocalPlayer():EyeAngles()
+    view.angles.r = 0
+
     view.drawviewer = true
 
     return view
@@ -334,7 +338,8 @@ end
 Find the right player to spectate
 ---------------------------------------------------------------------------]]
 local function findNearestObject()
-    local aimvec = LocalPlayer():GetAimVector()
+    if not view.angles then return end
+    local aimvec = view.angles:Forward()
     local fromPos = not isRoaming and isValid( specEnt ) and specEnt:EyePos() or roamPos
     local lookingAt = util.QuickTrace( fromPos, aimvec * 5000, LocalPlayer() )
     local ent = lookingAt.Entity
@@ -493,7 +498,8 @@ local function specThink()
 
     if not isRoaming or keysDown["USE"] then return end
     local roamSpeed = 1000
-    local aimVec = ply:GetAimVector()
+    if not view.angles then return end
+    local aimVec = view.angles:Forward()
     local direction
     local frametime = RealFrameTime()
 
