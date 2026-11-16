@@ -224,11 +224,13 @@ hook.Add( "Initialize", "fSpectate", function()
     end
 end )
 
+local view = {}
 --[[-------------------------------------------------------------------------
 Get the thirdperson position
 ---------------------------------------------------------------------------]]
 local function getThirdPersonPos( ent )
-    local aimvector = LocalPlayer():GetAimVector()
+    if not view.angles then return Vector( 0, 0, 0 ) end
+    local aimvector = view.angles:Forward()
     local startPos = ent:IsPlayer() and ent:GetShootPos() or ent:LocalToWorld( ent:OBBCenter() )
     local endpos = startPos - aimvector * thirdPersonDistance
 
@@ -246,13 +248,13 @@ end
 --[[-------------------------------------------------------------------------
 Get the CalcView table
 ---------------------------------------------------------------------------]]
-local view = {}
 
 local function getCalcView()
     if not isRoaming then
         if thirdperson then
-            view.origin = getThirdPersonPos( specEnt )
             view.angles = LocalPlayer():EyeAngles()
+            view.angles.r = 0
+            view.origin = getThirdPersonPos( specEnt )
         else
             view.origin = specEnt:IsPlayer() and specEnt:GetShootPos() or specEnt:LocalToWorld( specEnt:OBBCenter() )
             view.angles = specEnt:IsPlayer() and specEnt:EyeAngles() or specEnt:GetAngles()
@@ -266,6 +268,8 @@ local function getCalcView()
 
     view.origin = roamPos
     view.angles = LocalPlayer():EyeAngles()
+    view.angles.r = 0
+
     view.drawviewer = true
 
     return view
@@ -334,7 +338,8 @@ end
 Find the right player to spectate
 ---------------------------------------------------------------------------]]
 local function findNearestObject()
-    local aimvec = LocalPlayer():GetAimVector()
+    if not view.angles then return end
+    local aimvec = view.angles:Forward()
     local fromPos = not isRoaming and isValid( specEnt ) and specEnt:EyePos() or roamPos
     local lookingAt = util.QuickTrace( fromPos, aimvec * 5000, LocalPlayer() )
     local ent = lookingAt.Entity
@@ -468,16 +473,16 @@ local function specThink()
     local pls = player.GetAll()
     local lastPly = 0
     local skip = 0
-
+    
     for i = 0, #pls - 1 do
         local p = pls[i + 1]
         if not isValid( p ) then continue end
-
+        
         if not isRoaming and p == specEnt and not thirdperson then
             skip = skip + 3
             continue
         end
-
+        
         local tr = p:GetEyeTrace()
         local pos = i * 3 - skip
         linesToDraw[pos] = tr.HitPos
@@ -485,15 +490,16 @@ local function specThink()
         linesToDraw[pos + 2] = team.GetColor( p:Team() )
         lastPly = i
     end
-
+    
     -- Remove entries from linesToDraw that don't match with a player anymore
     for i = #linesToDraw, lastPly * 3 + 3, -1 do
         linesToDraw[i] = nil
     end
-
+    
     if not isRoaming or keysDown["USE"] then return end
     local roamSpeed = 1000
-    local aimVec = ply:GetAimVector()
+    if not view.angles then return end
+    local aimVec = view.angles:Forward()
     local direction
     local frametime = RealFrameTime()
 
